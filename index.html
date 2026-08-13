@@ -69,6 +69,11 @@
   }
 
   /* ================= START SCREEN ================= */
+  /* lets these three custom props animate smoothly (transition/keyframes) instead of snapping */
+  @property --mx{ syntax: '<percentage>'; inherits: true; initial-value: 50%; }
+  @property --my{ syntax: '<percentage>'; inherits: true; initial-value: 42%; }
+  @property --spot{ syntax: '<length>'; inherits: true; initial-value: 170px; }
+
   .start-screen{
     position: fixed;
     inset: 0;
@@ -76,36 +81,53 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg);
+    background: transparent;
     transition: visibility 0.9s ease;
     overflow: hidden;
+    --mx: 50%;
+    --my: 42%;
+    --spot: 170px;
+    animation: spotIdle 5s ease-in-out infinite;
   }
   .start-screen.hidden{
     visibility: hidden;
     pointer-events: none;
   }
+  @keyframes spotIdle{
+    0%, 100%{ --spot: 150px; }
+    50%{ --spot: 195px; }
+  }
 
-  /* two halves that slide apart (top up, bottom down) to reveal the site underneath */
-  .gate-panel{
+  /* dark cover with a torch-like hole cut into it, tracking the pointer, revealing the hero video underneath */
+  .spotlight-mask{
     position: absolute;
-    left: 0;
-    width: 100%;
-    height: 50%;
-    background:
-      radial-gradient(90% 120% at 50% 45%, rgba(122,46,66,0.45) 0%, rgba(20,18,26,0) 70%),
-      radial-gradient(70% 90% at 50% 55%, rgba(232,180,200,0.08) 0%, rgba(20,18,26,0) 70%),
-      var(--bg);
+    inset: 0;
     z-index: 1;
+    background: var(--bg);
+    -webkit-mask-image: radial-gradient(circle var(--spot) at var(--mx) var(--my), transparent 0%, transparent 58%, rgba(20,18,26,0.9) 82%, var(--bg) 100%);
+            mask-image: radial-gradient(circle var(--spot) at var(--mx) var(--my), transparent 0%, transparent 58%, rgba(20,18,26,0.9) 82%, var(--bg) 100%);
+    transition: --mx 0.12s linear, --my 0.12s linear;
   }
-  .gate-left{
-    top: 0;
-    background-position: center top;
-    border-bottom: 1px solid rgba(243,236,227,0.06);
+
+  /* warm rim of light around the edge of the hole, for a torch feel */
+  .spotlight-glow{
+    position: absolute;
+    z-index: 2;
+    left: var(--mx);
+    top: var(--my);
+    width: calc(var(--spot) * 2.5);
+    height: calc(var(--spot) * 2.5);
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(242,193,122,0.14) 0%, rgba(242,193,122,0.05) 45%, transparent 68%);
+    border: 1px solid rgba(242,193,122,0.22);
+    transition: --mx 0.12s linear, --my 0.12s linear, width 0.4s ease, height 0.4s ease;
   }
-  .gate-right{
-    bottom: 0;
-    background-position: center bottom;
-    border-top: 1px solid rgba(243,236,227,0.06);
+
+  /* only chase the real cursor on devices that have one; touch just gets the gentle idle pulse */
+  @media (hover: none), (pointer: coarse){
+    .start-screen{ --my: 40%; --spot: 210px; }
   }
 
   .start-inner{
@@ -1336,8 +1358,8 @@
 
 <!-- ================= START GATE ================= -->
 <div class="start-screen" id="startScreen">
-  <div class="gate-panel gate-left" id="gateLeft"></div>
-  <div class="gate-panel gate-right" id="gateRight"></div>
+  <div class="spotlight-mask" id="spotlightMask"></div>
+  <div class="spotlight-glow" id="spotlightGlow"></div>
 
   <div class="start-inner" id="startInner">
     <div class="start-mark">Areefa Samar</div>
@@ -1865,10 +1887,29 @@
   primeFrame(fgVideo);
   primeFrame(bgVideo);
 
-  /* ---------- Start gate: split-screen reveal + single gesture unlocks video + sound together ---------- */
-  const gateLeft = document.getElementById('gateLeft');
-  const gateRight = document.getElementById('gateRight');
+  /* ---------- Start gate: torch-like spotlight follows the pointer, revealing the hero video ---------- */
+  const spotlightMask = document.getElementById('spotlightMask');
   const startInner = document.getElementById('startInner');
+
+  /* move the "hole" in the cover to wherever the pointer is */
+  const hasFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (hasFinePointer){
+    startScreen.addEventListener('mousemove', (e) => {
+      const xPct = (e.clientX / window.innerWidth) * 100;
+      const yPct = (e.clientY / window.innerHeight) * 100;
+      startScreen.style.setProperty('--mx', xPct + '%');
+      startScreen.style.setProperty('--my', yPct + '%');
+    });
+  }
+  /* touch devices: let a finger drag the light around too */
+  startScreen.addEventListener('touchmove', (e) => {
+    const t = e.touches[0];
+    if (!t) return;
+    const xPct = (t.clientX / window.innerWidth) * 100;
+    const yPct = (t.clientY / window.innerHeight) * 100;
+    startScreen.style.setProperty('--mx', xPct + '%');
+    startScreen.style.setProperty('--my', yPct + '%');
+  }, { passive: true });
 
   startBtn.addEventListener('click', () => {
     // videos are primed and paused on frame 1 — start real playback now
@@ -1878,6 +1919,9 @@
     isPlaying = true;
     playPauseBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
 
+    // stop the idle pulse so the inline expansion below isn't fought by the keyframes
+    startScreen.style.animation = 'none';
+
     const gateTl = gsap.timeline({
       defaults: { ease: 'power4.inOut' },
       onComplete: () => startScreen.classList.add('hidden')
@@ -1885,8 +1929,9 @@
 
     gateTl
       .to(startInner, { opacity: 0, y: -16, duration: 0.45, ease: 'power2.out' }, 0)
-      .to(gateLeft, { yPercent: -100, duration: 1.1 }, 0.15)
-      .to(gateRight, { yPercent: 100, duration: 1.1 }, 0.15);
+      // the torch hole grows until it swallows the whole screen
+      .to(startScreen, { '--spot': '2400px', duration: 1.1 }, 0.1)
+      .to(spotlightMask, { opacity: 0, duration: 0.5 }, 0.75);
 
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' }, delay: 0.55 });
     tl.to('.eyebrow span', { y: '0%', duration: 0.9 }, 0.3)
