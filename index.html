@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Areefa Samar | Portfolio</title>
+<title>Areefa Samar — Portfolio</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1857,14 +1857,21 @@
     muteBtn.setAttribute('aria-label', muted ? 'Unmute video' : 'Mute video');
   }
 
+  /* ---------- prime the videos: render frame 1 without actually playing, ----------
+     so there's no black screen behind the gate and no time is burned before Explore is clicked */
+  function primeFrame(video){
+    video.play().then(() => video.pause()).catch(() => {});
+  }
+  primeFrame(fgVideo);
+  primeFrame(bgVideo);
+
   /* ---------- Start gate: split-screen reveal + single gesture unlocks video + sound together ---------- */
   const gateLeft = document.getElementById('gateLeft');
   const gateRight = document.getElementById('gateRight');
   const startInner = document.getElementById('startInner');
 
   startBtn.addEventListener('click', () => {
-    fgVideo.currentTime = 0;
-    bgVideo.currentTime = 0;
+    // videos are primed and paused on frame 1 — start real playback now
     fgVideo.play();
     bgVideo.play();
     setMuteUI(false);
@@ -1927,6 +1934,13 @@
 
   /* video plays once, then freezes on its last frame instead of looping, and the real home screen slides up */
   fgVideo.addEventListener('ended', () => {
+    // if they haven't clicked Explore yet, the muted pre-roll finished early —
+    // just loop it quietly so it's still playing whenever they do click
+    if (!startScreen.classList.contains('hidden')){
+      fgVideo.currentTime = 0;
+      fgVideo.play();
+      return;
+    }
     isPlaying = false;
     playPauseBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
     playPauseBtn.setAttribute('aria-label', 'Replay video');
