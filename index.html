@@ -140,6 +140,7 @@
     -webkit-backdrop-filter: blur(0px);
     transition: background .45s ease, border-color .45s ease, padding .35s ease, backdrop-filter .45s ease;
     opacity: 0;
+    pointer-events: none;
   }
   .navbar.scrolled{
     background: rgba(20,18,26,0.72);
@@ -738,6 +739,7 @@
   .reveal-up{ opacity: 0; transform: translateY(38px); }
   .reveal-left{ opacity: 0; transform: translateX(-44px); }
   .reveal-scale{ opacity: 0; transform: scale(0.94); }
+  .reveal-home{ opacity: 0; transform: translateY(70px); }
 
   /* ================= STUB SECTIONS (built next) ================= */
   .section-stub{ height: 2px; background: var(--bg); }
@@ -751,78 +753,135 @@
     .start-btn{ width: 108px; height: 108px; font-size: 15px; }
   }
 
-  /* ================= LANDING CARD (hovers over hero video on scroll) ================= */
-  .landing-wrap{
+  /* ================= HOME-MAIN (slides up over the video once it finishes) ================= */
+  .home-main{
     position: relative;
     z-index: 6;
+    min-height: 100vh;
     background: var(--bg);
-    padding-top: 1px; /* clip container so negative margin card reads as overlap */
-  }
-  .landing-card{
-    position: relative;
-    z-index: 10;
-    margin: -104px auto 0;
-    max-width: 1120px;
-    background: rgba(24,21,29,0.78);
-    border: 1px solid var(--line);
-    border-radius: 26px;
-    padding: 40px clamp(22px, 4.5vw, 52px);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 40px 90px rgba(0,0,0,0.5), 0 1px 0 rgba(243,236,227,0.06) inset;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 32px 40px;
+    padding: 130px clamp(20px, 5vw, 56px) 90px;
+    overflow: hidden;
   }
-  .landing-left{ display:flex; flex-direction:column; gap: 6px; }
-  .landing-kicker{
-    font-size: 10.5px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--amber);
+  .home-main::before{
+    content:'';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(50% 45% at 85% 15%, rgba(122,46,66,0.28) 0%, rgba(20,18,26,0) 70%),
+      radial-gradient(45% 40% at 8% 85%, rgba(142,168,136,0.12) 0%, rgba(20,18,26,0) 70%);
+    pointer-events: none;
   }
-  .landing-line{
-    font-family: 'Fraunces', serif;
-    font-size: clamp(18px, 2.4vw, 24px);
-    color: var(--ink);
-    max-width: 420px;
-    line-height: 1.4;
-  }
-  .landing-line em{ font-style: normal; color: var(--blush); }
 
-  .landing-stats{
-    display: flex;
-    gap: 36px;
-    flex-wrap: wrap;
-  }
-  .landing-stats .stat-num{ font-size: 22px; }
-
-  .landing-right{
+  .home-rail{
+    position: absolute;
+    left: clamp(16px, 3vw, 40px);
+    top: 0; bottom: 0;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    gap: 16px;
-  }
-  .landing-status{
-    display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    color: var(--ink-faint);
+    justify-content: space-between;
+    padding: 130px 0 40px;
+    z-index: 2;
   }
-  .landing-status .dot{
+  .home-rail-socials{ display:flex; flex-direction: column; gap: 18px; }
+  .home-rail-socials a{ color: var(--ink-faint); transition: color .3s ease, transform .3s ease; }
+  .home-rail-socials a:hover{ color: var(--amber); transform: translateY(-2px); }
+  .home-rail-socials svg{ width: 17px; height: 17px; }
+  .home-rail-scroll{
+    writing-mode: vertical-rl;
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: flex; align-items:center; gap: 10px;
+  }
+  .home-rail-scroll::after{
+    content:'';
+    width: 1px; height: 30px;
+    background: var(--line);
+  }
+  @media (max-width: 900px){ .home-rail{ display:none; } }
+
+  .home-inner{
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 56px;
+    align-items: center;
+  }
+
+  .home-eyebrow{
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--ink-dim);
+  }
+  .home-eyebrow span{ color: var(--amber); }
+  .home-name{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(42px, 6vw, 68px);
+    line-height: 0.98;
+    color: var(--ink);
+    margin: 10px 0 26px;
+  }
+  .home-name em{ font-style: normal; color: var(--blush); }
+
+  .home-cards{ display:flex; flex-direction: column; gap: 14px; max-width: 440px; }
+  .home-card{
+    border: 1px solid var(--line);
+    background: rgba(243,236,227,0.03);
+    border-radius: 16px;
+    padding: 18px 20px;
+  }
+  .home-card p{ font-size: 13px; line-height: 1.7; color: var(--ink-dim); }
+  .home-card p strong{ color: var(--ink); font-weight: 500; }
+  .home-card .home-status-row{ display:flex; align-items:center; gap:8px; margin-bottom: 8px; }
+  .home-card .home-status-row .dot{
     width:6px; height:6px; border-radius:50%;
     background: var(--sage);
     animation: pulse 2.2s ease-in-out infinite;
   }
-  .landing-socials{ display:flex; gap:10px; }
+  .home-card .home-status-row span.label{ font-size: 12.5px; color: var(--ink); font-weight: 500; }
+  .home-card .home-status-sub{ font-size: 12px; color: var(--ink-faint); }
 
-  @media (max-width: 780px){
-    .landing-card{ flex-direction: column; align-items: flex-start; margin-top: -70px; }
-    .landing-right{ align-items: flex-start; width: 100%; }
+  .home-pills{ display:flex; flex-wrap:wrap; gap: 10px; margin: 26px 0 30px; }
+  .home-pills span{
+    font-size: 11.5px;
+    letter-spacing: 0.02em;
+    color: var(--ink-dim);
+    border: 1px solid var(--line);
+    padding: 9px 16px;
+    border-radius: 999px;
+  }
+
+  .home-cta{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.05em;
+    color: var(--bg);
+    background: var(--amber);
+    text-decoration: none;
+    padding: 15px 28px;
+    border-radius: 999px;
+    transition: background .3s ease, transform .3s ease;
+  }
+  .home-cta:hover{ background: var(--blush); transform: translateY(-2px); }
+  .home-cta svg{ width: 14px; height: 14px; }
+
+  .home-portrait .img-placeholder{ aspect-ratio: 4/5; }
+
+  @media (max-width: 900px){
+    .home-inner{ grid-template-columns: 1fr; }
+    .home-portrait{ max-width: 320px; }
   }
 
   /* ================= SKILLS ================= */
@@ -1241,18 +1300,13 @@
   </div>
 </nav>
 
-<section class="hero" id="home">
+<section class="hero" id="intro">
   <video class="video-bg" src="assets/areefa-hero.mp4" muted playsinline preload="auto"></video>
   <video id="fgVideo" class="video-fg" src="assets/areefa-hero.mp4" muted playsinline preload="auto"></video>
   <div class="overlay"></div>
 
-  <div class="status">
-    <span class="dot"></span>
-    <span>Karachi · Open to work</span>
-  </div>
-
   <div class="content">
-    <div class="eyebrow"><span>CS &amp; IT Student · NED University '29</span></div>
+    <div class="eyebrow"><span>Portfolio · 2026</span></div>
     <h1 class="name">
       <span class="line"><span>Areefa</span></span>
       <span class="line"><span><em>Samar</em></span></span>
@@ -1271,57 +1325,59 @@
     </button>
   </div>
 
-  <a href="mailto:samarareefa@gmail.com" class="email-btn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-    <span class="full">Email me</span>
-  </a>
-
-  <div class="scroll-cue" onclick="document.getElementById('about')?.scrollIntoView({behavior:'smooth'})">
+  <div class="scroll-cue" id="skipCue">
     <div class="line"></div>
     <div class="label">Scroll</div>
   </div>
 </section>
 
-<!-- ================= LANDING CARD (hovers above hero on scroll) ================= -->
-<div class="landing-wrap">
-  <div class="landing-card reveal-up">
-    <div class="landing-left">
-      <span class="landing-kicker">Currently</span>
-      <p class="landing-line">Building <em>AI-integrated</em> web apps at NED University — open to internships and collaborative builds.</p>
-      <div class="landing-stats">
-        <div class="stat">
-          <span class="stat-num">5+</span>
-          <span class="stat-label">Projects Built</span>
-        </div>
-        <div class="stat">
-          <span class="stat-num">2029</span>
-          <span class="stat-label">Batch, NED UET</span>
-        </div>
-        <div class="stat">
-          <span class="stat-num">AI + Web</span>
-          <span class="stat-label">Core Focus</span>
-        </div>
-      </div>
+<!-- ================= HOME (auto-reveals, bottom-to-top, once the intro video finishes) ================= -->
+<section class="home-main" id="home">
+  <div class="home-rail">
+    <div class="home-rail-socials">
+      <a href="https://github.com/areefasamar" target="_blank" rel="noopener" aria-label="GitHub">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.5v-1.94c-2.78.62-3.37-1.36-3.37-1.36-.46-1.2-1.11-1.52-1.11-1.52-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.9 1.57 2.34 1.12 2.91.86.09-.66.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.05 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.72 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.9-1.33 2.74-1.05 2.74-1.05.55 1.41.2 2.46.1 2.72.64.72 1.03 1.63 1.03 2.75 0 3.92-2.34 4.78-4.57 5.04.36.32.68.94.68 1.9v2.82c0 .28.18.6.69.5A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+      </a>
+      <a href="#" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 8.5H3.56V21h3.38V8.5ZM5.25 3a1.96 1.96 0 1 0 0 3.92 1.96 1.96 0 0 0 0-3.92ZM20.44 21h-3.37v-6.53c0-1.56-.03-3.56-2.17-3.56-2.17 0-2.5 1.7-2.5 3.45V21H9.03V8.5h3.24v1.71h.05c.45-.86 1.56-1.77 3.22-1.77 3.45 0 4.9 2.27 4.9 6.06V21Z"/></svg>
+      </a>
+      <a href="#" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+      </a>
     </div>
-    <div class="landing-right">
-      <div class="landing-status">
-        <span class="dot"></span>
-        <span>Karachi, Pakistan · Open to work</span>
+    <div class="home-rail-scroll">Scroll Down</div>
+  </div>
+
+  <div class="home-inner">
+    <div class="home-text reveal-home">
+      <p class="home-eyebrow">Hi, I'm <span>Areefa</span></p>
+      <h2 class="home-name">CS &amp; IT Student<br>&amp; <em>AI-Focused</em> Developer</h2>
+
+      <div class="home-cards">
+        <div class="home-card">
+          <p>Building <strong>AI-integrated web apps</strong> with modern tools and thoughtful, honest design.</p>
+        </div>
+        <div class="home-card">
+          <div class="home-status-row"><span class="dot"></span><span class="label">Available for work</span></div>
+          <p class="home-status-sub">Based in Karachi, Pakistan · Open to internships &amp; remote collaboration</p>
+        </div>
       </div>
-      <div class="landing-socials">
-        <a href="https://github.com/areefasamar" target="_blank" rel="noopener" class="glass-btn" aria-label="GitHub">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.5v-1.94c-2.78.62-3.37-1.36-3.37-1.36-.46-1.2-1.11-1.52-1.11-1.52-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.9 1.57 2.34 1.12 2.91.86.09-.66.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.05 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.72 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.9-1.33 2.74-1.05 2.74-1.05.55 1.41.2 2.46.1 2.72.64.72 1.03 1.63 1.03 2.75 0 3.92-2.34 4.78-4.57 5.04.36.32.68.94.68 1.9v2.82c0 .28.18.6.69.5A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
-        </a>
-        <a href="#" target="_blank" rel="noopener" class="glass-btn" aria-label="LinkedIn">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 8.5H3.56V21h3.38V8.5ZM5.25 3a1.96 1.96 0 1 0 0 3.92 1.96 1.96 0 0 0 0-3.92ZM20.44 21h-3.37v-6.53c0-1.56-.03-3.56-2.17-3.56-2.17 0-2.5 1.7-2.5 3.45V21H9.03V8.5h3.24v1.71h.05c.45-.86 1.56-1.77 3.22-1.77 3.45 0 4.9 2.27 4.9 6.06V21Z"/></svg>
-        </a>
-        <a href="#" target="_blank" rel="noopener" class="glass-btn" aria-label="Instagram">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
-        </a>
+
+      <div class="home-pills">
+        <span>AI Integrator</span><span>Full-Stack Developer</span><span>UI/UX Explorer</span><span>Problem Solver</span>
       </div>
+
+      <a href="#projects" class="home-cta">
+        View Projects
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </div>
+
+    <div class="home-portrait reveal-home">
+      <div class="img-placeholder">+ Add Portrait Photo</div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- ================= ABOUT ================= -->
 <section class="about" id="about">
@@ -1386,27 +1442,29 @@
     <div class="timeline-item reveal-left">
       <div class="timeline-dot" style="--dot-color: var(--amber);"></div>
       <div class="timeline-content">
-        <h3>BE Computer Science &amp; Information Technology</h3>
+        <h3>BS Computer Science &amp; Information Technology</h3>
         <p>NED University of Engineering &amp; Technology, Karachi</p>
-        <span class="timeline-date">2025 — 2029</span>
+        <span class="timeline-date">Aug 2025 — Aug 2029</span>
       </div>
     </div>
 
     <div class="timeline-item reveal-left">
       <div class="timeline-dot" style="--dot-color: var(--blush);"></div>
       <div class="timeline-content">
-        <h3>Intermediate — Pre-Engineering</h3>
-        <p>Higher Secondary Education</p>
-        <span class="timeline-date">2023 — 2025</span>
+        <h3>Pre-Engineering — Grade A+</h3>
+        <p>Government Degree College, Malir Cantt</p>
+        <span class="timeline-date">Aug 2023 — May 2025</span>
+        <p style="margin-top:8px; font-size:12px; color:var(--ink-faint);">Activities: Event Conduction, Speeches, Project Management</p>
       </div>
     </div>
 
     <div class="timeline-item reveal-left">
       <div class="timeline-dot" style="--dot-color: var(--sage);"></div>
       <div class="timeline-content">
-        <h3>Aspire Leaders Program</h3>
-        <p>Global leadership &amp; project-based certification — developed the "DigiReach" proposal</p>
-        <span class="timeline-date">2025</span>
+        <h3>Matriculation, Computer Science — Grade A+</h3>
+        <p>Cantt Public School &amp; College, Malir Cantt</p>
+        <span class="timeline-date">Aug 2009 — Apr 2023</span>
+        <p style="margin-top:8px; font-size:12px; color:var(--ink-faint);">Activities: Debating, Event Management, Speeches, Marathons, Cycling, House Leadership, Musical Band</p>
       </div>
     </div>
   </div>
@@ -1737,14 +1795,11 @@
     startScreen.classList.add('hidden');
 
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    tl.to('.navbar', { opacity: 1, duration: 0.8 }, 0.1)
-      .to('.status', { opacity: 1, duration: 0.8 }, 0.2)
-      .to('.eyebrow span', { y: '0%', duration: 0.9 }, 0.4)
-      .to('.name .line span', { y: '0%', duration: 1.1, stagger: 0.12 }, 0.55)
-      .to('.tagline', { opacity: 1, duration: 0.9 }, 1.1)
-      .to('.controls-row', { opacity: 1, duration: 0.8 }, 1.25)
-      .to('.email-btn', { opacity: 1, duration: 0.8 }, 1.3)
-      .to('.scroll-cue', { opacity: 1, duration: 0.8 }, 1.4);
+    tl.to('.eyebrow span', { y: '0%', duration: 0.9 }, 0.3)
+      .to('.name .line span', { y: '0%', duration: 1.1, stagger: 0.12 }, 0.45)
+      .to('.tagline', { opacity: 1, duration: 0.9 }, 1.0)
+      .to('.controls-row', { opacity: 1, duration: 0.8 }, 1.15)
+      .to('.scroll-cue', { opacity: 1, duration: 0.8 }, 1.3);
   }, { once: true });
 
   /* ---------- manual video controls after entry ---------- */
@@ -1766,12 +1821,38 @@
     }
   });
 
-  /* video plays once, then freezes on its last frame instead of looping */
+  /* ---------- HOME reveal: auto-slides up over the intro the moment the video ends ---------- */
+  let homeRevealed = false;
+  function revealHome(auto){
+    if (homeRevealed) return;
+    homeRevealed = true;
+
+    gsap.to('.navbar', { opacity: 1, duration: 0.7, ease: 'power2.out' });
+    document.getElementById('navbar').style.pointerEvents = 'auto';
+    gsap.to('.reveal-home', {
+      opacity: 1, y: 0, duration: 1, ease: 'power3.out', stagger: 0.12
+    });
+
+    if (auto){
+      document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  /* video plays once, then freezes on its last frame instead of looping, and the real home screen slides up */
   fgVideo.addEventListener('ended', () => {
     isPlaying = false;
     playPauseBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
     playPauseBtn.setAttribute('aria-label', 'Replay video');
+    revealHome(true);
   });
+
+  /* manual skip: click the "Scroll" cue on the intro to jump straight to home */
+  document.getElementById('skipCue')?.addEventListener('click', () => revealHome(true));
+
+  /* fallback: if someone scrolls to #home manually before the video finishes, reveal it too */
+  new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) revealHome(false); });
+  }, { threshold: 0.2 }).observe(document.getElementById('home'));
 
   /* ---------- navbar scroll state ---------- */
   window.addEventListener('scroll', () => {
