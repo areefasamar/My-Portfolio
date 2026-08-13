@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Areefa Samar | Portfolio</title>
+<title>Areefa Samar — Portfolio</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,6 +25,8 @@
 
   *{ margin:0; padding:0; box-sizing:border-box; }
 
+  html{ scroll-behavior: smooth; }
+
   html,body{
     background: var(--bg);
     color: var(--ink);
@@ -34,11 +36,13 @@
     height: 100%;
   }
 
+  section{ scroll-margin-top: 88px; }
+
   /* ================= START SCREEN ================= */
   .start-screen{
     position: fixed;
     inset: 0;
-    z-index: 100;
+    z-index: 200;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -121,6 +125,123 @@
     100%{ transform: scale(1.18); opacity: 0; }
   }
 
+  /* ================= NAVBAR ================= */
+  .navbar{
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px clamp(20px, 5vw, 56px);
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    transition: background .45s ease, border-color .45s ease, padding .35s ease, backdrop-filter .45s ease;
+    opacity: 0;
+  }
+  .navbar.scrolled{
+    background: rgba(20,18,26,0.72);
+    border-bottom-color: var(--line);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .nav-logo{
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 2;
+  }
+  .nav-logo-dot{
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 10px 2px rgba(242,193,122,0.55);
+    flex-shrink: 0;
+  }
+
+  .nav-links{
+    display: flex;
+    align-items: center;
+    gap: 38px;
+  }
+  .nav-link{
+    position: relative;
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    text-decoration: none;
+    padding: 4px 0;
+    transition: color .3s ease;
+  }
+  .nav-link::after{
+    content:'';
+    position: absolute;
+    left: 0; bottom: -3px;
+    width: 0; height: 1px;
+    background: var(--amber);
+    transition: width .3s ease;
+  }
+  .nav-link:hover,
+  .nav-link.active{ color: var(--amber); }
+  .nav-link:hover::after,
+  .nav-link.active::after{ width: 100%; }
+
+  .nav-toggle{
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 30px;
+    height: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .nav-toggle span{
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: var(--ink);
+    transition: transform .3s ease, opacity .3s ease;
+  }
+  .nav-toggle.open span:nth-child(1){ transform: translateY(6px) rotate(45deg); }
+  .nav-toggle.open span:nth-child(2){ opacity: 0; }
+  .nav-toggle.open span:nth-child(3){ transform: translateY(-6px) rotate(-45deg); }
+
+  @media (max-width: 780px){
+    .nav-toggle{ display: flex; }
+    .nav-links{
+      position: fixed;
+      top: 0; right: 0;
+      height: 100vh;
+      width: min(72vw, 300px);
+      background: rgba(20,18,26,0.97);
+      backdrop-filter: blur(16px);
+      border-left: 1px solid var(--line);
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 30px;
+      padding: 40px clamp(28px, 8vw, 44px);
+      transform: translateX(100%);
+      transition: transform .45s cubic-bezier(.65,0,.35,1);
+    }
+    .nav-links.open{ transform: translateX(0); }
+    .nav-link{ font-size: 15px; }
+  }
+
   /* ================= HERO ================= */
   .hero{
     position: relative;
@@ -165,36 +286,12 @@
     pointer-events: none;
   }
 
-  /* ---- top bar ---- */
-  .topbar{
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    z-index: 5;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 28px clamp(20px, 5vw, 56px) 0;
-  }
-
-  .mark{
-    font-family: 'Fraunces', serif;
-    font-size: 15px;
-    letter-spacing: 0.04em;
-    color: var(--ink);
-    display:flex;
-    align-items:center;
-    gap: 10px;
-    opacity: 0;
-  }
-  .mark::before{
-    content:'';
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--amber);
-    box-shadow: 0 0 10px 2px rgba(242,193,122,0.55);
-  }
-
+  /* ---- status pill, top right of hero ---- */
   .status{
+    position: absolute;
+    top: 30px;
+    right: clamp(20px, 5vw, 56px);
+    z-index: 5;
     display:flex;
     align-items:center;
     gap:8px;
@@ -373,6 +470,278 @@
     100%{ top:100%; }
   }
 
+  /* ================= SHARED SECTION BITS ================= */
+  .section-eyebrow{
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-eyebrow::before{
+    content:'';
+    width: 24px; height: 1px;
+    background: var(--amber);
+  }
+  .section-title{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(32px, 4vw, 48px);
+    color: var(--ink);
+  }
+  .section-header{ max-width: 1200px; margin: 0 auto 64px; }
+
+  .img-placeholder{
+    width: 100%;
+    border-radius: 16px;
+    border: 1px dashed var(--line);
+    background: linear-gradient(160deg, rgba(176,71,95,0.14), rgba(142,168,136,0.05));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-faint);
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 20px;
+    transition: border-color .3s ease;
+  }
+
+  /* ================= ABOUT ================= */
+  .about{
+    position: relative;
+    background: var(--bg);
+    padding: 130px clamp(20px, 5vw, 56px);
+    overflow: hidden;
+  }
+  .about-inner{
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 64px;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .about-media .img-placeholder{ aspect-ratio: 4 / 5; }
+
+  .marquee{
+    overflow: hidden;
+    margin: 6px 0 30px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  }
+  .marquee-track{
+    display: flex;
+    width: max-content;
+    gap: 16px;
+    font-family: 'Fraunces', serif;
+    font-size: clamp(15px, 2vw, 21px);
+    color: var(--ink-dim);
+    white-space: nowrap;
+    animation: marqueeScroll 24s linear infinite;
+  }
+  .marquee-track .sep{ color: var(--maroon-bright); }
+  @keyframes marqueeScroll{
+    from{ transform: translateX(0); }
+    to{ transform: translateX(-50%); }
+  }
+
+  .about-para{
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--ink-dim);
+    max-width: 560px;
+  }
+
+  .about-stats{
+    display: flex;
+    gap: 44px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+  .stat-num{
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    color: var(--blush);
+  }
+  .stat-label{
+    display: block;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-top: 5px;
+  }
+
+  @media (max-width: 900px){
+    .about-inner{ grid-template-columns: 1fr; }
+    .about-media{ max-width: 320px; margin: 0 auto; }
+  }
+
+  /* ================= EDUCATION ================= */
+  .education{
+    padding: 130px clamp(20px, 5vw, 56px);
+    background: var(--bg);
+  }
+  .timeline{
+    max-width: 720px;
+    margin: 0 auto;
+    position: relative;
+    padding-left: 40px;
+  }
+  .timeline::before{
+    content:'';
+    position: absolute;
+    left: 5px; top: 6px; bottom: 6px;
+    width: 1px;
+    background: linear-gradient(var(--amber), var(--maroon-bright), var(--sage));
+  }
+  .timeline-item{ position: relative; padding-bottom: 60px; }
+  .timeline-item:last-child{ padding-bottom: 0; }
+  .timeline-dot{
+    position: absolute;
+    left: -40px; top: 4px;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--dot-color);
+    box-shadow: 0 0 0 5px var(--bg), 0 0 14px 2px var(--dot-color);
+  }
+  .timeline-content h3{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 19px;
+    color: var(--ink);
+    margin-bottom: 7px;
+  }
+  .timeline-content p{
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-bottom: 9px;
+  }
+  .timeline-date{
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .timeline-date::before{
+    content:'';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--amber);
+  }
+
+  /* ================= PROJECTS ================= */
+  .projects{
+    padding: 130px clamp(20px, 5vw, 56px) 150px;
+    background: var(--bg);
+  }
+  .project-list{
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 110px;
+  }
+  .project-row{
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .project-row.reverse{ direction: rtl; }
+  .project-row.reverse > *{ direction: ltr; }
+
+  .project-media .img-placeholder{ aspect-ratio: 16 / 11; }
+  .project-row:hover .img-placeholder{ border-color: var(--amber); }
+
+  .project-index{
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+  }
+  .project-category{
+    display: block;
+    margin-top: 10px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--amber);
+  }
+  .project-title{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(26px, 3vw, 36px);
+    margin-top: 12px;
+    color: var(--ink);
+  }
+  .project-tagline{
+    font-size: 13px;
+    color: var(--blush);
+    margin-top: 6px;
+    font-style: italic;
+  }
+  .project-link{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 18px;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 3px;
+    transition: color .3s ease, border-color .3s ease;
+  }
+  .project-link:hover{ color: var(--amber); border-color: var(--amber); }
+  .project-desc{
+    margin-top: 18px;
+    font-size: 13.5px;
+    line-height: 1.85;
+    color: var(--ink-dim);
+    max-width: 520px;
+  }
+  .project-tags{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 22px;
+  }
+  .project-tags span{
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    border: 1px solid var(--line);
+    padding: 6px 13px;
+    border-radius: 999px;
+  }
+
+  @media (max-width: 900px){
+    .project-row, .project-row.reverse{
+      grid-template-columns: 1fr;
+      direction: ltr;
+    }
+    .project-row.reverse > *{ direction: ltr; }
+  }
+
+  /* ================= SCROLL REVEALS ================= */
+  .reveal-up{ opacity: 0; transform: translateY(38px); }
+  .reveal-left{ opacity: 0; transform: translateX(-44px); }
+  .reveal-scale{ opacity: 0; transform: scale(0.94); }
+
+  /* ================= STUB SECTIONS (built next) ================= */
+  .section-stub{ height: 2px; background: var(--bg); }
+
   @media (max-width: 640px){
     .content{ bottom: 200px; }
     .name{ font-size: clamp(38px, 11vw, 60px); }
@@ -396,17 +765,33 @@
   </div>
 </div>
 
-<section class="hero">
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar" id="navbar">
+  <a href="#home" class="nav-logo">
+    <span class="nav-logo-dot"></span>
+    Areefa Samar
+  </a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links" id="navLinks">
+    <a href="#home" class="nav-link">Home</a>
+    <a href="#about" class="nav-link">About me</a>
+    <a href="#education" class="nav-link">Education</a>
+    <a href="#projects" class="nav-link">Projects</a>
+    <a href="#skills" class="nav-link">Skills</a>
+    <a href="#contact" class="nav-link">Contact</a>
+  </div>
+</nav>
+
+<section class="hero" id="home">
   <video class="video-bg" src="assets/areefa-hero.mp4" muted loop playsinline preload="auto"></video>
   <video id="fgVideo" class="video-fg" src="assets/areefa-hero.mp4" muted loop playsinline preload="auto"></video>
   <div class="overlay"></div>
 
-  <div class="topbar">
-    <div class="mark">Areefa Samar</div>
-    <div class="status">
-      <span class="dot"></span>
-      <span>Karachi · Open to work</span>
-    </div>
+  <div class="status">
+    <span class="dot"></span>
+    <span>Karachi · Open to work</span>
   </div>
 
   <div class="content">
@@ -440,9 +825,215 @@
   </div>
 </section>
 
-<section id="about" style="height:10px; background: var(--bg);"></section>
+<!-- ================= ABOUT ================= -->
+<section class="about" id="about">
+  <div class="about-inner">
+    <div class="about-media reveal-scale">
+      <div class="img-placeholder" style="aspect-ratio:4/5;">+ Add About Photo</div>
+    </div>
+    <div class="about-text">
+      <div class="section-eyebrow reveal-up">Who I Am</div>
+
+      <div class="marquee">
+        <div class="marquee-track">
+          <span>CS &amp; IT Student</span><span class="sep">·</span>
+          <span>AI Integrator</span><span class="sep">·</span>
+          <span>Full-Stack Developer</span><span class="sep">·</span>
+          <span>UI/UX Explorer</span><span class="sep">·</span>
+          <span>Problem Solver</span><span class="sep">·</span>
+          <span>Next.js</span><span class="sep">·</span>
+          <span>Python</span><span class="sep">·</span>
+          <span>Supabase</span><span class="sep">·</span>
+          <span>CS &amp; IT Student</span><span class="sep">·</span>
+          <span>AI Integrator</span><span class="sep">·</span>
+          <span>Full-Stack Developer</span><span class="sep">·</span>
+          <span>UI/UX Explorer</span><span class="sep">·</span>
+          <span>Problem Solver</span><span class="sep">·</span>
+          <span>Next.js</span><span class="sep">·</span>
+          <span>Python</span><span class="sep">·</span>
+          <span>Supabase</span><span class="sep">·</span>
+        </div>
+      </div>
+
+      <p class="about-para reveal-up">
+        I'm a Computer Science &amp; IT student at NED University, building AI-integrated web apps that solve specific, real problems instead of generic ones — from a delivery-trust tool for Karachi's informal sellers to a prescription reader that's honest about what it can't read. I care about software that knows its own limits and is genuinely useful in the hands people actually have. I work across the full stack — frontend, backend, and the AI layer that ties it together — and I learn fastest by shipping.
+      </p>
+
+      <div class="about-stats">
+        <div class="stat reveal-up">
+          <span class="stat-num">5+</span>
+          <span class="stat-label">Projects Built</span>
+        </div>
+        <div class="stat reveal-up">
+          <span class="stat-num">2029</span>
+          <span class="stat-label">Batch, NED UET</span>
+        </div>
+        <div class="stat reveal-up">
+          <span class="stat-num">AI + Web</span>
+          <span class="stat-label">Core Focus</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EDUCATION ================= -->
+<section class="education" id="education">
+  <div class="section-header reveal-up">
+    <div class="section-eyebrow">Academic Path</div>
+    <h2 class="section-title">Education</h2>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-item reveal-left">
+      <div class="timeline-dot" style="--dot-color: var(--amber);"></div>
+      <div class="timeline-content">
+        <h3>BE Computer Science &amp; Information Technology</h3>
+        <p>NED University of Engineering &amp; Technology, Karachi</p>
+        <span class="timeline-date">2025 — 2029</span>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal-left">
+      <div class="timeline-dot" style="--dot-color: var(--blush);"></div>
+      <div class="timeline-content">
+        <h3>Intermediate — Pre-Engineering</h3>
+        <p>Higher Secondary Education</p>
+        <span class="timeline-date">2023 — 2025</span>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal-left">
+      <div class="timeline-dot" style="--dot-color: var(--sage);"></div>
+      <div class="timeline-content">
+        <h3>Aspire Leaders Program</h3>
+        <p>Global leadership &amp; project-based certification — developed the "DigiReach" proposal</p>
+        <span class="timeline-date">2025</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROJECTS ================= -->
+<section class="projects" id="projects">
+  <div class="section-header reveal-up">
+    <div class="section-eyebrow">Selected Work</div>
+    <h2 class="section-title">Projects</h2>
+  </div>
+
+  <div class="project-list">
+
+    <!-- 01 RxClear -->
+    <article class="project-row">
+      <div class="project-media reveal-scale">
+        <div class="img-placeholder">+ Add Project Image</div>
+      </div>
+      <div class="project-info reveal-up">
+        <span class="project-index">01 / 05</span>
+        <span class="project-category">AI · Healthcare</span>
+        <h3 class="project-title">RxClear</h3>
+        <p class="project-tagline">Understand your prescription in seconds</p>
+        <a href="https://rx-clear-liard.vercel.app/" target="_blank" rel="noopener" class="project-link">Live Demo →</a>
+        <p class="project-desc">
+          Reads handwritten or printed prescriptions and explains them in plain language for patients and caregivers. Rather than guessing at illegible handwriting, it rates its own confidence per medicine and honestly flags anything unclear for pharmacist confirmation — built to be a responsible reading aid, not a false authority.
+        </p>
+        <div class="project-tags">
+          <span>Vision LLM</span><span>Prompt Engineering</span><span>Anonymous Sessions</span><span>PDF Export</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 02 VibeCheck -->
+    <article class="project-row reverse">
+      <div class="project-media reveal-scale">
+        <div class="img-placeholder">+ Add Project Image</div>
+      </div>
+      <div class="project-info reveal-up">
+        <span class="project-index">02 / 05</span>
+        <span class="project-category">AI · E-Commerce</span>
+        <h3 class="project-title">VibeCheck</h3>
+        <p class="project-tagline">A neobrutalist streetwear e-commerce experience</p>
+        <a href="https://vibecheck-store.vercel.app/" target="_blank" rel="noopener" class="project-link">Live Demo →</a>
+        <p class="project-desc">
+          Built during GDG Kolachi's Build with AI Workshop, VibeCheck breaks the minimalist e-commerce norm with a high-contrast, neon Gen-Z aesthetic. Gemini 3 Flash powers a "Vibe Analysis" tool that reads an uploaded garment photo and writes its description and pricing, plus a "Neural Audit" that scans inventory for restock strategies.
+        </p>
+        <div class="project-tags">
+          <span>React</span><span>Gemini API</span><span>Neobrutalism</span><span>Recharts</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 03 ATS Score Evaluator -->
+    <article class="project-row">
+      <div class="project-media reveal-scale">
+        <div class="img-placeholder">+ Add Project Image</div>
+      </div>
+      <div class="project-info reveal-up">
+        <span class="project-index">03 / 05</span>
+        <span class="project-category">AI · Career Tools</span>
+        <h3 class="project-title">ATS Score Evaluator</h3>
+        <p class="project-tagline">Know how your resume scores before you apply</p>
+        <a href="https://atsscoreevaluator.netlify.app/" target="_blank" rel="noopener" class="project-link">Live Demo →</a>
+        <p class="project-desc">
+          An AI resume evaluator that compares a resume against a job description the way an ATS would — returning a match score, a gap analysis of missing skills, and rewrite suggestions. Uses semantic matching via Gemini rather than simple keyword counting, with the model prompted to act as a senior technical recruiter.
+        </p>
+        <div class="project-tags">
+          <span>Gemini API</span><span>Resume Parsing</span><span>Prompt Engineering</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 04 Password Security Suite -->
+    <article class="project-row reverse">
+      <div class="project-media reveal-scale">
+        <div class="img-placeholder">+ Add Project Image</div>
+      </div>
+      <div class="project-info reveal-up">
+        <span class="project-index">04 / 05</span>
+        <span class="project-category">C++ · OOP</span>
+        <h3 class="project-title">Password Security Suite</h3>
+        <p class="project-tagline">OOP final semester project — CS-201</p>
+        <a href="#" class="project-link">View Code →</a>
+        <p class="project-desc">
+          A modular C++ console application that evaluates, generates, and stores passwords using real cybersecurity practices. Includes an encrypted vault, a master-password AuthGuard with lockout, a breach-database leak checker, and a health dashboard — built to demonstrate encapsulation, abstraction, inheritance, and polymorphism.
+        </p>
+        <div class="project-tags">
+          <span>C++</span><span>OOP</span><span>Encryption</span><span>File I/O</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 05 Quiz Game -->
+    <article class="project-row">
+      <div class="project-media reveal-scale">
+        <div class="img-placeholder">+ Add Project Image</div>
+      </div>
+      <div class="project-info reveal-up">
+        <span class="project-index">05 / 05</span>
+        <span class="project-category">C · CLI Game</span>
+        <h3 class="project-title">Quiz Game</h3>
+        <p class="project-tagline">Terminal-based quiz across four subjects</p>
+        <a href="https://github.com/areefasamar/Programming-Fundamentals/tree/main/CCP%20folder/Project%20Code" target="_blank" rel="noopener" class="project-link">View Code →</a>
+        <p class="project-desc">
+          A terminal-based C quiz game covering General Knowledge, English, Geography, and Maths, with each subject's question bank stored in its own text file. Tracks scores on a persistent leaderboard so players can compete across sessions.
+        </p>
+        <div class="project-tags">
+          <span>C</span><span>File Handling</span><span>Leaderboard</span><span>CLI</span>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ================= SKILLS (next) ================= -->
+<section id="skills" class="section-stub"></section>
+
+<!-- ================= CONTACT (next) ================= -->
+<section id="contact" class="section-stub"></section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
 <script>
   const fgVideo = document.getElementById('fgVideo');
@@ -451,6 +1042,9 @@
   const muteBtn = document.getElementById('muteBtn');
   const startScreen = document.getElementById('startScreen');
   const startBtn = document.getElementById('startBtn');
+  const navbar = document.getElementById('navbar');
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
 
   const unmutedIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a9 9 0 0 1 0 12"/></svg>';
   const mutedIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><line x1="16" y1="9" x2="21" y2="15"/><line x1="21" y1="9" x2="16" y2="15"/></svg>';
@@ -467,8 +1061,6 @@
 
   /* ---------- Start gate: single gesture unlocks video + sound together ---------- */
   startBtn.addEventListener('click', () => {
-    // This click is a genuine user gesture, so unmuted playback is allowed
-    // by every major browser — video and sound start in the same instant.
     fgVideo.currentTime = 0;
     bgVideo.currentTime = 0;
     fgVideo.play();
@@ -479,9 +1071,8 @@
 
     startScreen.classList.add('hidden');
 
-    // Entrance sequence plays right after the visitor enters, not before.
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    tl.to('.mark', { opacity: 1, duration: 0.8 }, 0.1)
+    tl.to('.navbar', { opacity: 1, duration: 0.8 }, 0.1)
       .to('.status', { opacity: 1, duration: 0.8 }, 0.2)
       .to('.eyebrow span', { y: '0%', duration: 0.9 }, 0.4)
       .to('.name .line span', { y: '0%', duration: 1.1, stagger: 0.12 }, 0.55)
@@ -491,7 +1082,7 @@
       .to('.scroll-cue', { opacity: 1, duration: 0.8 }, 1.4);
   }, { once: true });
 
-  /* ---------- manual controls after entry ---------- */
+  /* ---------- manual video controls after entry ---------- */
   muteBtn.addEventListener('click', () => setMuteUI(!isMuted));
 
   playPauseBtn.addEventListener('click', () => {
@@ -505,6 +1096,67 @@
       playPauseBtn.setAttribute('aria-label', 'Pause video');
     }
     isPlaying = !isPlaying;
+  });
+
+  /* ---------- navbar scroll state ---------- */
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  /* ---------- mobile nav toggle ---------- */
+  navToggle.addEventListener('click', () => {
+    navToggle.classList.toggle('open');
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      navToggle.classList.remove('open');
+      navLinks.classList.remove('open');
+    });
+  });
+
+  /* ---------- active link highlight on scroll ---------- */
+  const sections = document.querySelectorAll('section[id]');
+  const navItems = document.querySelectorAll('.nav-link');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting){
+        navItems.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+  sections.forEach(sec => observer.observe(sec));
+
+  /* ---------- scroll-triggered section reveals ---------- */
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.utils.toArray('.reveal-up:not(.stat)').forEach(el => {
+    gsap.to(el, {
+      opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 87%' }
+    });
+  });
+
+  gsap.utils.toArray('.reveal-left').forEach(el => {
+    gsap.to(el, {
+      opacity: 1, x: 0, duration: 1, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 87%' }
+    });
+  });
+
+  gsap.utils.toArray('.reveal-scale').forEach(el => {
+    gsap.to(el, {
+      opacity: 1, scale: 1, duration: 1.1, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 87%' }
+    });
+  });
+
+  // subtle stagger for the about stats row
+  gsap.to('.about-stats .stat', {
+    opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.15,
+    scrollTrigger: { trigger: '.about-stats', start: 'top 90%' }
   });
 </script>
 
